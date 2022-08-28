@@ -2,6 +2,7 @@
 import { h } from "preact";
 import { tw } from "@twind";
 import { Handlers, PageProps } from "$fresh/server.ts";
+import { addBook, Book, findBookByUrl } from "@db";
 
 interface Data {
   error: {
@@ -26,12 +27,21 @@ export const handler: Handlers<Data> = {
       });
     }
 
-    const article = {
-      url,
-    };
+    const a = await findBookByUrl(url);
 
-    // データベースに保存
-    //await createArticle(article);
+    console.log(a);
+
+    if (a != null) {
+      return ctx.render({
+        error: {
+          url: "Url is already exists",
+        },
+        url,
+      });
+    }
+
+    await addBook(url);
+    console.log(url);
 
     // トップページにリダイレクト
     return new Response("", {
@@ -58,6 +68,7 @@ export default function AddNewBook(
           name="url"
           type="text"
           class={tw("w-full p-2 border border-gray-300 rounded-md")}
+          value={data?.url}
         />
         {data?.error?.url && (
           <p class={tw("text-red-500 text-sm")}>{data.error.url}</p>
