@@ -9,6 +9,8 @@
     "twind/": "https://esm.sh/twind@0.16.17/",
     "@db": "./utils/db.ts",
     "postgress": "https://deno.land/x/postgres@v0.16.1/mod.ts",
-    "dotenv/": "https://deno.land/x/dotenv@v3.2.0/"
+    "dotenv/": "https://deno.land/x/dotenv@v3.2.0/",
+    "dom": "https://deno.land/x/deno_dom@v0.1.34-alpha/deno-dom-wasm.ts",
+    "@dom": "./utils/dom.ts"
   }
 }

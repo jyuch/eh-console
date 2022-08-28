@@ -39,11 +39,11 @@ export const findBookByUrl = async (url: string) => {
   }
 };
 
-export const addBook = async (url: string) => {
+export const addBook = async (url: string, title: string) => {
   try {
     const result = await client.queryObject<Book>(
-      "insert into book (url, title, parsed) values ($1, '', false) returning *",
-      [url],
+      "insert into book (url, title, parsed) values ($1, $2, false) returning *",
+      [url, title],
     );
     return result.rows[0];
   } catch (e) {

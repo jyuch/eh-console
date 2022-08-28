@@ -3,6 +3,7 @@ import { h } from "preact";
 import { tw } from "@twind";
 import { Handlers, PageProps } from "$fresh/server.ts";
 import { addBook, Book, findBookByUrl } from "@db";
+import { getTitle } from "@dom";
 
 interface Data {
   error: {
@@ -13,11 +14,9 @@ interface Data {
 
 export const handler: Handlers<Data> = {
   async POST(req, ctx) {
-    // フォームデータの入力値を取得
     const formData = await req.formData();
     const url = formData.get("url")?.toString();
 
-    // タイトルまたはコンテンツどちらも未入力の場合はバリデーションエラー
     if (!url) {
       return ctx.render({
         error: {
@@ -31,7 +30,7 @@ export const handler: Handlers<Data> = {
 
     console.log(a);
 
-    if (a != null) {
+    if (a !== null) {
       return ctx.render({
         error: {
           url: "Url is already exists",
@@ -40,7 +39,10 @@ export const handler: Handlers<Data> = {
       });
     }
 
-    await addBook(url);
+    const title = await getTitle(url);
+    console.log(title);
+
+    await addBook(url, title ? title : "");
     console.log(url);
 
     // トップページにリダイレクト
