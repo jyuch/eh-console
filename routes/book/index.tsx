@@ -9,8 +9,8 @@ interface Remain {
 export const handler: Handlers<Remain> = {
   async GET(_, ctx) {
     const remain: Remain = {
-      book: await getDownloadRemain(),
-      page: await getParseRemain(),
+      book: await getParseRemain(),
+      page: await getDownloadRemain(),
     };
     return ctx.render(remain);
   },
