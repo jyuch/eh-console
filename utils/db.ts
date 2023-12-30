@@ -1,5 +1,4 @@
-import { Client } from "postgress";
-import "dotenv/load.ts";
+import { Client } from "postgres";
 
 export interface Book {
   id?: number;
@@ -22,7 +21,7 @@ try {
   console.error(e);
 }
 
-export const findBookByUrl = async (url: string) => {
+export const findBookByUrl = async (url: string): Promise<Book | null> => {
   try {
     const result = await client.queryObject<Book>(
       "select * from book where url = $1",
@@ -39,7 +38,10 @@ export const findBookByUrl = async (url: string) => {
   }
 };
 
-export const addBook = async (url: string, title: string) => {
+export const addBook = async (
+  url: string,
+  title: string,
+): Promise<Book | null> => {
   try {
     const result = await client.queryObject<Book>(
       "insert into book (url, title, parsed) values ($1, $2, false) returning *",
@@ -49,5 +51,29 @@ export const addBook = async (url: string, title: string) => {
   } catch (e) {
     console.error(e);
     return null;
+  }
+};
+
+export const getDownloadRemain = async (): Promise<number> => {
+  try {
+    const result = await client.queryObject<{ count: number }>(
+      `select count(id) from page p where p.downloaded = false`,
+    );
+    return result.rows[0].count;
+  } catch (e) {
+    console.error(e);
+    return 0;
+  }
+};
+
+export const getParseRemain = async (): Promise<number> => {
+  try {
+    const result = await client.queryObject<{ count: number }>(
+      `select count(id) from book p where p.parsed = false`,
+    );
+    return result.rows[0].count;
+  } catch (e) {
+    console.error(e);
+    return 0;
   }
 };
